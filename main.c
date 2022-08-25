@@ -1,38 +1,35 @@
 #include <stdlib.h>
+#include <limits.h>
 #include <SDL2/SDL.h>
-#include "libs/writeToCanva.h"
+#include "libs/canva.h"
 
 
 int main() {
     SDL_Init(SDL_INIT_EVERYTHING);
-    SDL_Window *window = SDL_CreateWindow("Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1600, 900, 0);
+    SDL_Window *window = SDL_CreateWindow("Window", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
     SDL_Surface *window_surface = SDL_GetWindowSurface(window);
-    SDL_Surface *canvas = SDL_CreateRGBSurfaceWithFormat(0, 1600, 900, 32, SDL_PIXELFORMAT_RGBA8888);
+    SDL_Surface *canvas = SDL_CreateRGBSurfaceWithFormat(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, SDL_PIXELFORMAT_RGBA8888);
     uint32_t *buffer = (uint32_t*) canvas->pixels;
-    int row    = 0;
-    int column = 0;
-    int offset;
-    uint32_t color;
     SDL_LockSurface(canvas);
-    /*while (row < 900)
-    {
-        column = 0;
-        while (column < 1600)
-        {
-            if (column % 25 == 0){
-            offset = row * 1600 + column;
-            printf("offset : %d", offset);
-            color = SDL_MapRGBA(canvas->format, 255, 0, 0, 255);
-            //writeToCanva(buffer, row, column, color, 1600, 900);
-            buffer[offset] = color;
-            }
-            column++;
+    //writeToCanva(buffer, 0, 0, SDL_MapRGBA(canvas->format, 255, 0, 0, 255), SCREEN_WIDTH, SCREEN_HEIGHT);
+    //writeToCanva(buffer, -200, -200, SDL_MapRGBA(canvas->format, 255, 0, 0, 255), SCREEN_WIDTH, SCREEN_HEIGHT);
+    //writeToCanva(buffer, 300, -200, SDL_MapRGBA(canvas->format, 255, 0, 0, 255), SCREEN_WIDTH, SCREEN_HEIGHT);
+
+    Pos origin = {0, 0, 0};
+    Sphere spheres[SPHERE_NUMBER] = { (Sphere){(__sphere_center){0, -1, 3}, 1, (Color){255, 0, 0}},
+                        (Sphere){(__sphere_center){2, 0, 4}, 1, (Color){0, 0, 255}},
+                        (Sphere){(__sphere_center){-2, 0, 4}, 1, (Color){0, 255, 0}}
+                        };
+    for (int x = -SCREEN_WIDTH/2; x < SCREEN_WIDTH/2;x++){
+        for (int y = -SCREEN_HEIGHT/2; y < SCREEN_HEIGHT/2;y++){
+            Pos D = canvaToViewPort(x, y);
+            Color color; 
+            color = traceRay(origin, D, 1, INT_MAX, spheres);
+            printf("TEST\n");
+            writeToCanva(buffer, x, y, SDL_MapRGB(canvas->format, color.red, color.green, color.blue), SCREEN_WIDTH, SCREEN_HEIGHT);
+            
         }
-        row++;
-    }*/
-    writeToCanva(buffer, 200, 200, SDL_MapRGBA(canvas->format, 255, 0, 0, 255), 1600, 900);
-    writeToCanva(buffer, -200, -200, SDL_MapRGBA(canvas->format, 255, 0, 0, 255), 1600, 900);
-    writeToCanva(buffer, 300, -200, SDL_MapRGBA(canvas->format, 255, 0, 0, 255), 1600, 900);
+    }
     SDL_UnlockSurface(canvas);
     int quit = 0;
     SDL_Event event;
