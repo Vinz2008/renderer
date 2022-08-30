@@ -9,11 +9,10 @@
 
 #define SPHERE_NUMBER 3
 
-typedef struct {
-    int x;
-    int y;
-    int z;
-} __sphere_center;
+typedef struct vector3 {
+  float x, y, z;
+} Vector3;
+
 
 typedef struct {
     uint32_t red;
@@ -24,19 +23,15 @@ typedef struct {
 #define BACKGROUND_COLOR (Color){0, 0, 0}
 
 typedef struct {
-    __sphere_center center;
-    int radius;
+    Vector3 center;
+    float radius;
     Color color;
 } Sphere;
 
-typedef struct {
-    int x;
-    int y;
-    int z;
-} Pos;
+
 
 
 int writeToCanva(uint32_t *buffer, int x, int y, uint32_t color, int screenWidth, int screenHeight);
-Pos canvaToViewPort(int x, int y);
-void intersectRaySphere(Pos origin, Pos D, Sphere sphere, int* t1, int* t2);
-Color traceRay(Pos origin, Pos D, int t_min, int t_max, Sphere spheres[SPHERE_NUMBER]);
+Vector3 canvaToViewPort(int x, int y);
+void intersectRaySphere(Vector3 origin, Vector3 D, Sphere sphere, float* t1, float* t2);
+Color traceRay(Vector3 origin, Vector3 D, float t_min, float t_max, Sphere spheres[SPHERE_NUMBER]);

@@ -14,17 +14,16 @@ int main() {
     //writeToCanva(buffer, 0, 0, SDL_MapRGBA(canvas->format, 255, 0, 0, 255), SCREEN_WIDTH, SCREEN_HEIGHT);
     //writeToCanva(buffer, -200, -200, SDL_MapRGBA(canvas->format, 255, 0, 0, 255), SCREEN_WIDTH, SCREEN_HEIGHT);
     //writeToCanva(buffer, 300, -200, SDL_MapRGBA(canvas->format, 255, 0, 0, 255), SCREEN_WIDTH, SCREEN_HEIGHT);
-
-    Pos origin = {0, 0, 0};
-    Sphere spheres[SPHERE_NUMBER] = { (Sphere){(__sphere_center){0, -1, 3}, 1, (Color){255, 0, 0}},
-                        (Sphere){(__sphere_center){2, 0, 4}, 1, (Color){0, 0, 255}},
-                        (Sphere){(__sphere_center){-2, 0, 4}, 1, (Color){0, 255, 0}}
+    Vector3 origin = {0, 0, 0};
+    Sphere spheres[SPHERE_NUMBER] = { (Sphere){(Vector3){0, -1, 3}, 1, (Color){255, 0, 0}},
+                        (Sphere){(Vector3){2, 0, 4}, 1, (Color){0, 0, 255}},
+                        (Sphere){(Vector3){-2, 0, 4}, 1, (Color){0, 255, 0}}
                         };
     for (int x = -SCREEN_WIDTH/2; x < SCREEN_WIDTH/2;x++){
         for (int y = -SCREEN_HEIGHT/2; y < SCREEN_HEIGHT/2;y++){
-            Pos D = canvaToViewPort(x, y);
+            Vector3 D = canvaToViewPort(x, y);
             Color color; 
-            color = traceRay(origin, D, 1, INT_MAX, spheres);
+            color = traceRay(origin, D, 1, INFINITY, spheres);
             printf("TEST\n");
             writeToCanva(buffer, x, y, SDL_MapRGB(canvas->format, color.red, color.green, color.blue), SCREEN_WIDTH, SCREEN_HEIGHT);
             
@@ -46,7 +45,7 @@ int main() {
         SDL_BlitSurface(canvas, 0, window_surface, 0);
         SDL_UpdateWindowSurface(window);
 
-        SDL_Delay(10);
+        //SDL_Delay(10);
     }
 
     SDL_Quit();
