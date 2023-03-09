@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "io": "llvm",
+        "std": "llvm",
+        "*.wasm": "wasm",
+        "sdl.h": "c"
+    }
+}

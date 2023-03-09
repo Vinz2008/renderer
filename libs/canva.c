@@ -4,6 +4,7 @@
 #include <limits.h>
 #include <math.h>
 #include <stdio.h>
+#include <SDL2/SDL.h>
 
 
 int dotProduct(Vector3 v1, Vector3 v2){
@@ -18,8 +19,8 @@ int convertPositions(int screenWidth, int screenHeight, int x, int y, int* xOut,
 
 Vector3 canvaToViewPort(int x, int y){
     Vector3 posTemp;
-    posTemp.x = x * VIEWPORT_WIDTH/SCREEN_WIDTH;
-    posTemp.y = y * VIEWPORT_HEIGHT/SCREEN_HEIGHT;
+    posTemp.x = x * VIEWPORT_WIDTH / SCREEN_WIDTH;
+    posTemp.y = y * VIEWPORT_HEIGHT / SCREEN_HEIGHT;
     posTemp.z = DISTANCE_CAMERA;
     return posTemp;
 }
@@ -33,10 +34,10 @@ void intersectRaySphere(Vector3 origin, Vector3 D, Sphere sphere, float* t1, flo
     int a = dotProduct(D, D);
     int b = 2 * dotProduct(CO, D);
     int c = dotProduct(CO, CO) - radius * radius;
-    int discriminant = b * b - 4 * a * c;
+    float discriminant = b * b - 4 * a * c;
     if (discriminant < 0){
-        *t1 = INFINITY;
-        *t2 = INFINITY;
+        *t1 = /*INFINITY*/ INF;
+        *t2 = /*INFINITY*/ INF;
     }
     *t1 = (-b + sqrt(discriminant)) / (2*a);
     *t2 = (-b - sqrt(discriminant)) / (2*a);
@@ -49,7 +50,7 @@ Color traceRay(Vector3 origin, Vector3 D, float t_min, float t_max, Sphere spher
     for (int i = 0; i < SPHERE_NUMBER; i++){
         sphere = spheres[i];
         float t1, t2;
-        printf("TEST2\n");
+        //printf("TEST2\n");
         intersectRaySphere(origin, D, sphere, &t1, &t2);
         if (t1 > t_min && t1 < t_max && t1 < closest_t){
             closest_t = t1;
@@ -67,11 +68,21 @@ Color traceRay(Vector3 origin, Vector3 D, float t_min, float t_max, Sphere spher
 }
 
 
-int writeToCanva(uint32_t *buffer, int x, int y, uint32_t color, int screenWidth, int screenHeight){
+int writeToCanva(SDL_Renderer *renderer, int x, int y, uint8_t r, uint8_t g, uint8_t b, uint8_t a, int screenWidth, int screenHeight){
     int xTemp;
     int yTemp;
     convertPositions(screenWidth, screenHeight, x, y, &xTemp, &yTemp);
-    uint32_t offset = yTemp * screenWidth + xTemp;
-    buffer[offset] = color; 
+    //uint32_t offset = yTemp * screenWidth + xTemp;
+    //buffer[offset] = color;
+    /*uint8_t r = (color >> 24);
+    uint8_t g = (color >> 16);
+    uint8_t b = (color >> 8);
+    uint8_t a = color;*/
+    SDL_SetRenderDrawColor(renderer, r, g, b, a);
+    SDL_RenderDrawPoint(renderer, xTemp, yTemp);
     return 0;
+}
+
+uint32_t createColor(uint8_t r, uint8_t g, uint8_t b, uint8_t a){
+    return r << 24 | g << 16 | b << 8 |  a;
 }
