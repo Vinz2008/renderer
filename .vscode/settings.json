@@ -3,6 +3,15 @@
         "io": "llvm",
         "std": "llvm",
         "*.wasm": "wasm",
-        "sdl.h": "c"
+        "*.toml": "toml",
+        "*.hpoint": "cpoint",
+        "sdl.h": "c",
+        "vector": "cpp",
+        "fstream": "cpp",
+        "deque": "cpp",
+        "string": "cpp",
+        "__split_buffer": "cpp",
+        "list": "cpp",
+        "iosfwd": "cpp"
     }
 }

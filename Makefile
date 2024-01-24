@@ -1,21 +1,23 @@
-all: setup build/renderer.o build/canva.o linking cleanbuild
+CXX = g++
 
-setup:
-	rm -rf build
-	mkdir build
+CXXFLAGS = -c -g -Wall
+LDFLAGS = -lSDL2 -lm
 
-build/renderer.o:
-	gcc -c -g -o build/renderer.o main.c -Wall
+SRCDIR = src
 
-build/canva.o:
-	gcc -c -g -o build/canva.o libs/canva.c -Wall
+SRCS := $(wildcard $(SRCDIR)/*.cpp)
+OBJS = $(patsubst %.cpp,%.o,$(SRCS))
 
-cleanbuild:
-	rm -rf build
+all: renderer
 
+$(SRCDIR)/%.o: $(SRCDIR)/%.cpp
+	$(CXX) $(CXXFLAGS) -o $@ $<
 
-linking:
-	gcc -o renderer build/renderer.o build/canva.o -lSDL2 -lm
+renderer: $(OBJS)
+	$(CXX) -o $@ $^ $(LDFLAGS)
+
+clean:
+	rm -f renderer src/*.o
 
 run:
 	./renderer
